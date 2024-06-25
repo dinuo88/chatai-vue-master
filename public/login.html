@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.svg">
+
+
+    <script src="https://registry.npmmirror.com/jquery/3.7.1/files/dist/jquery.min.js"></script>
+    <script src="https://registry.npmmirror.com/marked/4.3.0/files/marked.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <link rel="stylesheet" type="text/css"
+        href="https://registry.npmmirror.com/fomantic-ui/2.9.3/files/dist/semantic.min.css">
+    <script src="https://registry.npmmirror.com/fomantic-ui/2.9.3/files/dist/semantic.min.js"></script>
+
+
+    <!-- TODO: Katex supported -->
+    <!-- <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.16.9/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/UziTech/marked-katex-extension@1.0.2/lib/index.umd.js"></script> -->
+
+
+    <link href="/static/css/main.css" rel="stylesheet">
+
+    <title>Login</title>
+</head>
+
+<body>
+    <div class="outer">
+        <div id="navbar">
+            <div class="ui borderless top fixed menu">
+                <div class="ui container">
+                    <a class=" vertically fitted item" href="/">
+
+                        <span><i class="home icon"></i>Home</span>
+
+                    </a>
+
+                    <div class="right menu">
+
+
+
+                        <a class="ui item" href="/login">
+                            <i class="user icon"></i>Login
+                        </a>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="ui text container">
+            <h2 class="ui header">
+                # Login
+            </h2>
+            <h2 class="ui header">
+                # Login
+            </h2>
+            <form class="ui form" method="post" id="loginform">
+                <div class="field">
+                    <label>Username</label>
+                    <input type="text" id="username" name="username" placeholder="">
+                </div>
+                <div class="field">
+                    <label>Password</label>
+                    <input type="password" id="password" name="password">
+                </div>
+
+                <button class="ui button" type="button" onclick="login()">Submit</button>
+
+                <p>Have no account? <a href="/register">Register <i class="external link icon"></i></a></p>
+            </form>
+
+            <script>
+                $('#loginform')
+                    .form({
+                        fields: {
+                            name: 'empty',
+                            password: 'empty',
+                        }
+                    })
+                    ;
+                function login() {
+                    const name = document.querySelector('input[name="username"]').value;
+                    const password = document.querySelector('input[name="password"]').value;
+                    console.log(111111111111111111);
+                    console.log(name + ":  " + password);
+                    console.log(111111111111111111);
+
+                    axios.post('http://127.0.0.1:8081/user/login', {
+                        name: name,
+                        password: password
+                    })
+                        .then(response => {
+                            // 假设返回的数据中有一个token字段
+                            const token = response.data.data;
+                            const user_exist = response.data.msg;
+                            console.log(token);
+                            if (user_exist === "用户不存在") {
+                                console.log("用户不存在!!!!!!");
+                            }
+                            else {
+                                console.log(token);
+                                // 将token存储在localStorage中
+                                localStorage.setItem('authToken', token);
+                                window.location.href = 'http://127.0.0.1:8080/';
+                            }
+                            // console.log(token);
+                            // // 将token存储在localStorage中
+                            // localStorage.setItem('authToken', token);
+
+                            // 重定向到Vue前端页面
+                            // window.location.href = 'http://127.0.0.1:8080/';
+                        })
+                        .catch(error => {
+                            console.error('登录失败：', error);
+                        });
+                }
+            </script>
+        </div>
+
+
+
+
+
+        <div class="ui hidden divider"></div>
+        <div class="ui hidden divider"></div>
+    </div>
+
+    <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            $(".ui:not(.hidden, .no-invert)").addClass("inverted");
+        }
+        $('.outer').show();
+
+        $('.markd').each((i, e) => {
+            // marked.use(markedKatex());
+            e.innerHTML = marked.parse(e.innerHTML, { breaks: true })
+        })
+
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            const newColorScheme = event.matches ? "dark" : "light";
+            console.log(newColorScheme)
+            if (newColorScheme == "dark") {
+                $(".ui:not(.hidden)").addClass("inverted");
+            } else {
+                $(".ui:not(.hidden)").removeClass("inverted");
+            }
+        });
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>

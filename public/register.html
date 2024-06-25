@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.svg">
+
+    
+    <script src="https://registry.npmmirror.com/jquery/3.7.1/files/dist/jquery.min.js"></script>
+    <script src="https://registry.npmmirror.com/marked/4.3.0/files/marked.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://registry.npmmirror.com/fomantic-ui/2.9.3/files/dist/semantic.min.css">
+    <script src="https://registry.npmmirror.com/fomantic-ui/2.9.3/files/dist/semantic.min.js"></script>
+    
+
+    <!-- TODO: Katex supported -->
+    <!-- <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.16.9/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/UziTech/marked-katex-extension@1.0.2/lib/index.umd.js"></script> -->
+
+    
+    <link href="/static/css/main.css" rel="stylesheet">
+
+    <title>Register</title>
+</head>
+
+<body>
+    <div class="outer">
+        <div id="navbar">
+    <div class="ui borderless top fixed menu">
+        <div class="ui container">
+            <a class=" vertically fitted item" href="/">
+                
+                <span><i class="home icon"></i>Home</span>
+                
+            </a>
+
+            <div class="right menu">
+                
+
+                
+                <a class="ui item" href="/login">
+                    <i class="user icon"></i>Login
+                </a>
+                
+
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+
+<div class="ui text container">
+    <h2 class="ui header">
+        # Register
+    </h2>
+    <h2 class="ui header">
+        # Register
+    </h2>
+    <form class="ui form" method="post" id="regform" action="http://127.0.0.1:8081/register">
+        <div class="field">
+            <label>Username</label>
+            <input type="text" name="username" placeholder="">
+        </div>
+        <div class="field">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="At least 8 characters">
+        </div>
+        <div class="field">
+            <label>Password confirm</label>
+            <input type="password" name="password2" placeholder="At least 8 characters">
+        </div>
+        
+
+        <button class="ui button" type="submit">Submit</button>
+
+    </form>
+
+    <script>
+        $('#regform')
+            .form({
+                fields: {
+                    username: ['empty', 'maxLength[20]'],
+                    password: ['minLength[8]', 'maxLength[50]'],
+                }
+            })
+            ;
+    </script>
+</div>
+
+
+
+
+
+        
+        <div class="ui hidden divider"></div>
+        <div class="ui hidden divider"></div>
+    </div>
+
+    <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            $(".ui:not(.hidden, .no-invert)").addClass("inverted");
+        }
+        $('.outer').show();
+
+        $('.markd').each((i, e) => {
+            // marked.use(markedKatex());
+            e.innerHTML = marked.parse(e.innerHTML, { breaks: true })
+        })
+
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            const newColorScheme = event.matches ? "dark" : "light";
+            console.log(newColorScheme)
+            if (newColorScheme == "dark") {
+                $(".ui:not(.hidden)").addClass("inverted");
+            } else {
+                $(".ui:not(.hidden)").removeClass("inverted");
+            }
+        });
+
+
+        
+
+        
+
+        
+
+        
+    </script>
+</body>
+
+</html>
