@@ -11,6 +11,7 @@
     <script src="https://registry.npmmirror.com/jquery/3.7.1/files/dist/jquery.min.js"></script>
     <script src="https://registry.npmmirror.com/marked/4.3.0/files/marked.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
 
     <link rel="stylesheet" type="text/css"
         href="https://registry.npmmirror.com/fomantic-ui/2.9.3/files/dist/semantic.min.css">
@@ -99,9 +100,9 @@
                         .then(response => {
                             // 假设返回的数据中有一个token字段
                             const token = response.data.data;
-                            const user_exist = response.data.msg;
+                            const userExist = response.data.msg;
                             console.log(token);
-                            if (user_exist === "用户不存在") {
+                            if (userExist === "用户不存在") {
                                 console.log("用户不存在!!!!!!");
                             }
                             else {

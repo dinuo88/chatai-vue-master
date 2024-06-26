@@ -33,7 +33,7 @@
             <div class="flex-1 overflow-hidden">
               <div class="react-scroll-to-bottom--css-ncqif-79elbk h-full dark:bg-gray-800">
                 <div ref="chatContainer" class="react-scroll-to-bottom--css-krija-1n7m0yu">
-                  <div id="full_div" class="flex flex-col items-center text-sm dark:bg-gray-800">
+                  <div  id = "full_div" class="flex flex-col items-center text-sm dark:bg-gray-800">
                     <!-- 对话item -->
                     <template v-for="conv, idx in conversation">
                       <!-- user -->
@@ -491,8 +491,7 @@
                     <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                   </svg>
                   日间模式</a>
-
-                <a href="http://127.0.0.1:8081/logout"
+                  <a href="http://127.0.0.1:8081/logout"
                   class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm">
                   <svg stroke="currentColor" fill="currentColor" stroke-width="2" viewBox="0 0 640 512" class="h-4 w-4"
                     height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
@@ -650,6 +649,11 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: 'App'
+};
+</script>
 
 <script>
 
@@ -695,6 +699,7 @@ marked.use({ renderer });
 export default {
   data() {
     return {
+      loginPromptVisible: false,
       theme: "light",
       popupShow: true,
       avatarIdx: 1,
@@ -719,11 +724,19 @@ export default {
       fetch('http://localhost:8081/models')
         .then(response => response.json())
         .then(models => {
-          this.availableModels = models.data.rows;
-          console.log("models: ");
-          console.log(JSON.stringify(this.availableModels));
-          if (models.data.total > 0) {
-            this.selectedModel = models.data.rows[0].modelId;
+          if (models.message != "success"){
+            // 弹窗+跳转
+            alert("请先登录");
+            // this.loginPromptVisible = true;
+            window.location.href = '/login.html';
+          }
+          else{
+            this.availableModels = models.data.rows;
+            console.log("models: ");
+            console.log(JSON.stringify(this.availableModels));
+            if (models.data.total > 0) {
+              this.selectedModel = models.data.rows[0].modelId;
+            }
           }
         })
         .catch(error => {
@@ -836,16 +849,17 @@ export default {
       var low_div = document.getElementById('need_to_change');
       if (selectBox && theme == "dark") {
         selectBox.style.backgroundColor = 'rgba(64,65,79)';
-      } else if (selectBox && theme == "light") {
-        selectBox.style.backgroundColor = 'white';
-      }
-      console.log(")))(&())");
-      console.log(full_div);
-      if (full_div && (theme == "dark")) {
+    } else if(selectBox && theme == "light")
+    {
+      selectBox.style.backgroundColor = 'white';
+    }
+    console.log(")))(&())");
+    console.log(full_div);
+    if (full_div && (theme == "dark")) {
         full_div.style.backgroundColor = 'rgba(52,53,65)';
-      } else if (full_div && (theme == "light")) {
-        full_div.style.backgroundColor = '#dbe2ef';
-      }
+    } else if(full_div && (theme == "light")){
+      full_div.style.backgroundColor = '#dbe2ef';
+    }
 
     },
     initConvs(convs) {
