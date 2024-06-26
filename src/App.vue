@@ -33,7 +33,7 @@
             <div class="flex-1 overflow-hidden">
               <div class="react-scroll-to-bottom--css-ncqif-79elbk h-full dark:bg-gray-800">
                 <div ref="chatContainer" class="react-scroll-to-bottom--css-krija-1n7m0yu">
-                  <div  id = "full_div" class="flex flex-col items-center text-sm dark:bg-gray-800">
+                  <div id="full_div" class="flex flex-col items-center text-sm dark:bg-gray-800">
                     <!-- 对话item -->
                     <template v-for="conv, idx in conversation">
                       <!-- user -->
@@ -344,7 +344,7 @@
 
                 <!-- 对话列表 -->
                 <div class="flex-col flex-1 overflow-y-auto border-b border-white/20" style="padding-bottom: 5px;">
-                  <div class="flex flex-col gap-2 text-gray-100 text-sm">
+                  <div class="flex flex-col gap-2 text-gray-100 text-sm" :key=ForceRanderKey>
 
                     <template v-for="conversation, cidx in conversations">
 
@@ -491,7 +491,7 @@
                     <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                   </svg>
                   日间模式</a>
-                  <a href="http://127.0.0.1:8081/logout"
+                <a href="http://127.0.0.1:8081/logout"
                   class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm">
                   <svg stroke="currentColor" fill="currentColor" stroke-width="2" viewBox="0 0 640 512" class="h-4 w-4"
                     height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
@@ -717,6 +717,7 @@ export default {
       tsource: undefined,
       availableModels: [],
       selectedModel: "",
+      ForceRanderKey: 0,
     };
   },
   methods: {
@@ -724,7 +725,7 @@ export default {
       fetch('http://localhost:8081/models')
         .then(response => response.json())
         .then(models => {
-          if (models.message != "success"){
+          if (models.msg != "success"){
             // 弹窗+跳转
             alert("请先登录");
             // this.loginPromptVisible = true;
@@ -1130,6 +1131,8 @@ export default {
         });
     },
     loadConversations() {
+      this.get_history_title();
+      this.ForceRanderKey += 1;
       let convs = localStorage.getItem("conversations") || "[]";
       this.conversations = JSON.parse(convs);
     },
@@ -1217,7 +1220,18 @@ export default {
       }, 100);
     },
     changeConvTitle(idx, conv) {
+      console.log("Change Title:");
+      console.log(this.convTitletmp);
       conv.title = this.convTitletmp;
+      // fetch
+      fetch(`http://localhost:8081/sessions/updateName`, {
+        method: 'POST', // 指定请求方法为POST
+        headers: {
+          'Content-Type': 'application/json', // 设置内容类型为JSON
+        },
+        body: JSON.stringify({ name: this.convTitletmp, sessionId: this.cid }), // 将会话ID作为请求体发送
+      })
+
       this.saveConversations();
       this.cancelChangeConvTitle(idx, conv)
     },
@@ -1242,6 +1256,41 @@ export default {
         let scrollElem = this.$refs.chatContainer;
         scrollElem.scrollTo({ top: scrollElem.scrollHeight, behavior: 'smooth' });
       });
+    },
+    get_history_title(){
+      // 使用fetch发送GET请求
+      fetch(`http://localhost:8081/sessions/query`, {
+        method: 'GET', // 指定请求方法为POST
+        headers: {
+          'Content-Type': 'application/json', // 设置内容类型为JSON
+        },
+      })
+        .then(response => response.json()) // 解析JSON响应
+        .then(data => {
+          // 假设后端以某种形式发送完整的标题或数据块
+          if (data.msg === 'success') {
+            let Rows = data.data.rows; // 假设后端发送的数据中包含title
+            let Total = data.data.total;
+            let result = [];
+            console.log(typeof Rows[0].sessionId);
+            for (let i = 0; i < Rows.length; i++){
+
+              let newRow = {
+                id: Rows[i].sessionId,
+                title: Rows[i].sessionName
+              };
+              result.push(newRow);
+            }
+            console.log(result);
+            localStorage.setItem('conversations', JSON.stringify(result));
+            console.log("storage success!");
+          } else {
+            console.log('Error:', data.msg);
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
     },
     isScrollAndNotBottom() {
       let chatDivEle = this.$refs.chatContainer;
@@ -1278,8 +1327,8 @@ export default {
     this.fetchModels();
     var theme = localStorage.getItem("theme") || "light"
     this.changeTheme(theme);
-    this.loadId();
     this.loadConversations();
+    this.loadId();
     this.loadAvatar();
 
     let chatDivEle = this.$refs.chatContainer;

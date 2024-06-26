@@ -22,7 +22,7 @@ axios.interceptors.request.use(
     console.log(token);
     if (token) {
       // 在请求头中添加Authorization字段，通常包含Bearer前缀
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `${token}`;
     }
     return config;
   }, 
