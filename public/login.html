@@ -74,7 +74,7 @@
 
                 <button class="ui button" type="button" onclick="login()">Submit</button>
 
-                <p>Have no account? <a href="/register">Register <i class="external link icon"></i></a></p>
+                <p>Have no account? <a href="/register.html">Register <i class="external link icon"></i></a></p>
             </form>
 
             <script>
@@ -101,11 +101,12 @@
                             // 假设返回的数据中有一个token字段
                             const token = response.data.data;
                             const condition = response.data.msg;
-                            if (condition === "用户不存在" || condition === "用户名或密码错误"){
+                            if (condition === "用户不存在" || condition === "用户名或密码错误") {
                                 alert(condition);
                             }
                             else {
                                 // 将token存储在localStorage中
+                                localStorage.setItem("flush", 0);
                                 localStorage.setItem('authToken', token);
                                 window.location.href = 'http://127.0.0.1:8080/';
                             }
